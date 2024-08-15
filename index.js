@@ -15,7 +15,7 @@ app.get('/GB', (req, res) => {
     res.sendFile(__dirname + '/GB.html');
 });
 
-var congCount = 0;
+var congCount = 800;
 
 io.on('connection', (socket) => {
     io.emit('update count', congCount);
@@ -23,30 +23,33 @@ io.on('connection', (socket) => {
 })
 
 var congIp = [];
+var guestBookIp = [];
+
 var guestBook = [];
 
-function checkCallingOverflow(socket, COOL_DOWN){
+function checkCallingOverflow(arr, socket, COOL_DOWN){
     let ip = socket.handshake.address;
-    if(congIp.includes(ip)){
+    if(arr.includes(ip)){
         io.emit('warn', socket.id);
         return false;
     }
+       
+    arr.push(ip);
+    setTimeout(() => { arr.splice(arr.indexOf(ip, 5))}, COOL_DOWN * 1000);
 
-    congIp.push(ip);
-    setTimeout(() => { congIp.splice(congIp.indexOf(ip, 1))}, COOL_DOWN * 1000);
     return true;
 }
 
 io.on('connection', (socket) => {
 
     socket.on('register', (packet) => {
-        if(!checkCallingOverflow(socket, 10)) return;
+        if(!checkCallingOverflow(guestBookIp, socket, 10)) return;
 
         guestBook.push({name: packet.name, content: packet.content});
     });
 
     socket.on('congratulation', () => {
-        if(!checkCallingOverflow(socket, 1)) return;
+        if(!checkCallingOverflow(congIp, socket, 5)) return;
 
         congCount++;
         io.emit('update count', congCount);

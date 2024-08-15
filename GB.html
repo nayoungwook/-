@@ -27,6 +27,7 @@
     <script>
         var list = document.querySelector('#list');
         var submit = document.querySelector('#submit');
+        var backup;
 
         var _name = document.querySelector('.name');
         var content = document.querySelector('.content');
@@ -56,6 +57,7 @@
 
         socket.on('update GB', (GB) => {
             list.innerHTML = '';
+            backup = GB;
             for(let i=0; i<GB.length; i++){
                 list.innerHTML += `<li>${GB[GB.length - 1 - i].name} : ${GB[GB.length - 1 - i].content}</li>`
             }
