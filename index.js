@@ -7,11 +7,11 @@ const io = new Server(server);
 
 app.use(express.static('./'))
 
-app.get('/', (req, res) => {
+app.get('/Ttabong-youngwook', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
 
-app.get('/GB', (req, res) => {
+app.get('/Ttabong-youngwook/GB', (req, res) => {
     res.sendFile(__dirname + '/GB.html');
 });
 
