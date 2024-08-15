@@ -43,13 +43,13 @@ function checkCallingOverflow(arr, socket, COOL_DOWN){
 io.on('connection', (socket) => {
 
     socket.on('register', (packet) => {
-        if(!checkCallingOverflow(guestBookIp, socket, 10)) return;
+        if(!checkCallingOverflow(guestBookIp, socket, 30)) return;
 
         guestBook.push({name: packet.name, content: packet.content});
     });
 
     socket.on('congratulation', () => {
-        if(!checkCallingOverflow(congIp, socket, 5)) return;
+        if(!checkCallingOverflow(congIp, socket, 10)) return;
 
         congCount++;
         io.emit('update count', congCount);
