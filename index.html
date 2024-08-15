@@ -12,32 +12,63 @@
             font-weight: 100;
         }
         body{
+            margin: 10%;
             text-align: center;
+        }
+        button{
+            border: none;
+            color: rgb(255, 255, 255);
+            font-family: 'Black Han Sans', sans-serif;
+            font-weight: 200;
+            font-style: normal;
+            background-color: #04AA6D;;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
     <h1 id="title"> 따봉 영욱아 생일축하해! </h1>
-    <img src="dochi.jpg" style="width: 20%;" />
-    <h2> 8월 16일 금요일은 '나영욱' 학생의 생일입니다.</h1>
+    <img src="dochi.jpg" style="width: 40%;"/>
+
+    <h2> 8월 16일 금요일은 </h2>
+    <h2>'나영욱' 학생의 생일입니다.</h2>
+    <h2> 아래의 버튼을 눌러 영욱이의 생일을 축하해 주세요.</h2>
+
+    <h1 id="cnt">축하 받은 횟수 : 0</h1>
+
+    <button id="btn"> 생일 축하하기 </button>
     <br>
-    <h2> 아래의 버튼을 눌러 영욱이의 생일을 축하해 주세요.</h1>
-    <button style="border: none;
-        color: rgb(255, 255, 255);
-        font-family: 'Black Han Sans', sans-serif;
-        font-weight: 200;
-        font-style: normal;
-        background-color: #04AA6D;;
-        padding: 15px 32px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        margin: 4px 2px;
-        cursor: pointer;"> 생일 축하하기 </button>
+    <button id="visit-gb"> 방명록 확인하기 </button>
+
+    <script src="/socket.io/socket.io.js"></script>
     <script>
-        var title = document.querySelector('title');
-        title.style.color = 'rgb(255, 0, 0)';
+        var socket = io();
+        var input = document.querySelector('#btn');
+        var visit_GB = document.querySelector('#visit-gb');
+        var count = document.querySelector('#cnt');
+                
+        input.onclick = () => {
+            socket.emit('congratulation');
+        }
+
+        visit_GB.onclick = () => {
+            location.href = './GB';
+        }
+
+        socket.on('warn', function(id){
+            if(socket.id == id)
+                alert('축하 하고자 하는 마음은 고맙지만,\n너무 많이 하시면 서버가 다운됩니다.\n디도스 하지 마세욧!');
+        });
+
+        socket.on('update count', function(cnt) {
+            count.innerHTML = '축하 받은 횟수 : ' + cnt;
+        });
     </script>
 </body>
 </html>

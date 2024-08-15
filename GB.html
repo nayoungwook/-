@@ -1,0 +1,66 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>방명록</title>
+    <link rel="stylesheet" href="./GB_style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="input-group">
+        <label for="textarea">축하의 메시지를 남겨주세요!</label>
+
+        <div style="display: flex;">
+            <textarea style="width:20%" id="textarea" class="name" maxlength="20" placeholder="이름"></textarea>
+            <textarea id="textarea" class="content" maxlength="30" placeholder="여기에 입력하세요... (최대 30자)"></textarea>
+            <button id="submit"> > </button>
+        </div>
+        
+        <ul id="list">
+        </ul>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var list = document.querySelector('#list');
+        var submit = document.querySelector('#submit');
+
+        var _name = document.querySelector('.name');
+        var content = document.querySelector('.content');
+
+        var socket = io();
+
+        submit.onclick = () => {
+
+            if(_name.value == ''){
+                alert('이름을 입력해주세요!');
+                return;
+            } 
+
+            if(content.value == ''){
+                alert('축하의 말을 남겨주세요!');
+                return;
+            } 
+
+            socket.emit('register', {'name': _name.value, 'content': content.value});
+            location.reload();
+        }
+
+        socket.on('warn', function(id){
+            if(socket.id == id)
+                alert('축하 하고자 하는 마음은 고맙지만,\n너무 많이 하시면 서버가 다운됩니다.\n디도스 하지 마세욧!');
+        });
+
+        socket.on('update GB', (GB) => {
+            list.innerHTML = '';
+            for(let i=0; i<GB.length; i++){
+                list.innerHTML += `<li>${GB[GB.length - 1 - i].name} : ${GB[GB.length - 1 - i].content}</li>`
+            }
+        });
+
+    </script>
+</body>
+</html>
